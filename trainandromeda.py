@@ -12,8 +12,8 @@ import torch.optim as optim
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, Dataset
 import os
-from torch.utils.tensorboard import SummaryWriter
-from torchmetrics import MetricCollection, Accuracy
+# from torch.utils.tensorboard import SummaryWriter
+# from torchmetrics import MetricCollection, Accuracy
 
 
 # constants
@@ -26,7 +26,7 @@ VALIDATE_EVERY  = 100
 GENERATE_EVERY  = 500
 GENERATE_LENGTH = 1024
 SEQ_LEN = 1024
-SAVE_EVERY=1000
+SAVE_EVERY=500
 
 
 # helpers
@@ -96,11 +96,11 @@ optim = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 # training
 
-#init tensorboard 
-writer = SummaryWriter(log_dir="./log")
+# #init tensorboard 
+# writer = SummaryWriter(log_dir="./log")
 
-#define metrics
-metrics = MetricCollection({'accuracy': Accuracy()})
+# #define metrics
+# metrics = MetricCollection({'accuracy': Accuracy(num_classes=num_classes, task='classification')})
 
 for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     model.train()
@@ -121,12 +121,12 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
                 loss = model(next(val_loader))
                 print(f'validation loss: {loss.item()}')
 
-                # Calculate validation metrics
-                val_metrics = MetricCollection({'val_accuracy': Accuracy()})
-                val_metrics(loss, model(next(val_loader)).argmax(dim=-1))
+                # # Calculate validation metrics
+                # val_metrics = MetricCollection({'val_accuracy': Accuracy()})
+                # val_metrics(loss, model(next(val_loader)).argmax(dim=-1))
 
-                # Add validation metrics to the SummaryWriter
-                writer.add_scalar('Validation/Accuracy', val_metrics['val_accuracy'].compute(), global_step=i)
+                # # Add validation metrics to the SummaryWriter
+                # writer.add_scalar('Validation/Accuracy', val_metrics['val_accuracy'].compute(), global_step=i)
 
     if i % GENERATE_EVERY == 0:
         model.eval()
@@ -151,8 +151,8 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
         torch.save(model.state_dict(), os.path.join(save_dir, save_filename))
         print(f"Model saved at iteration {i}")
 
-    # Add training metrics to the SummaryWriter
-    writer.add_scalar('Training/Accuracy', metrics['accuracy'].compute(), global_step=i)
+#     # Add training metrics to the SummaryWriter
+#     writer.add_scalar('Training/Accuracy', metrics['accuracy'].compute(), global_step=i)
 
-    # Close the SummaryWriter
-writer.close()
+#     # Close the SummaryWriter
+# writer.close()
