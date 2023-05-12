@@ -1,7 +1,3 @@
-!git clone https://github.com/kyegomez/Optimus-Prime.git
-%cd Optimus-Prime
-%cd examples
-%cd enwiki8_simple
 
 from torch.serialization import load
 import torch 
