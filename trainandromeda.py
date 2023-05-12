@@ -13,8 +13,7 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader, Dataset
 import os
 
-save_dir = './saved_models/'
-save_filename = 'model_checkpoint.pt'
+
 # constants
 
 NUM_BATCHES = int(1e5)
@@ -94,9 +93,6 @@ val_loader    = cycle(DataLoader(val_dataset, batch_size = BATCH_SIZE, drop_last
 optim = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 # training
-
-# training
-
 for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     model.train()
 
@@ -135,5 +131,7 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
         os.makedirs(save_dir, exist_ok=True)
 
         # Save the model checkpoint
-        torch.save(model.state_dict(), os.path.join(save_dir, save_filename))
+        saved = torch.save(model.state_dict(), os.path.join(save_dir, save_filename))
+        print(f"saved: {saved}")
+        
 
