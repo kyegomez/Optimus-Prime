@@ -12,6 +12,8 @@ import torch.optim as optim
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, Dataset
 import os
+from torch.utils.tensorboard import SummaryWriter
+from torchmetrics import MetricCollection, Accuracy
 
 
 # constants
@@ -93,6 +95,13 @@ val_loader    = cycle(DataLoader(val_dataset, batch_size = BATCH_SIZE, drop_last
 optim = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 # training
+
+#init tensorboard 
+writer = SummaryWriter(log_dir="./log")
+
+#define metrics
+metrics = MetricCollection({'accuracy': Accuracy()})
+
 for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     model.train()
 
@@ -105,11 +114,19 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     optim.step()
     optim.zero_grad()
 
+
     if i % VALIDATE_EVERY == 0:
-        model.eval()
-        with torch.no_grad():
-            loss = model(next(val_loader))
-            print(f'validation loss: {loss.item()}')
+            model.eval()
+            with torch.no_grad():
+                loss = model(next(val_loader))
+                print(f'validation loss: {loss.item()}')
+
+                # Calculate validation metrics
+                val_metrics = MetricCollection({'val_accuracy': Accuracy()})
+                val_metrics(loss, model(next(val_loader)).argmax(dim=-1))
+
+                # Add validation metrics to the SummaryWriter
+                writer.add_scalar('Validation/Accuracy', val_metrics['val_accuracy'].compute(), global_step=i)
 
     if i % GENERATE_EVERY == 0:
         model.eval()
@@ -131,7 +148,11 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
         os.makedirs(save_dir, exist_ok=True)
 
         # Save the model checkpoint
-        saved = torch.save(model.state_dict(), os.path.join(save_dir, save_filename))
-        print(f"saved: {saved}")
-        
+        torch.save(model.state_dict(), os.path.join(save_dir, save_filename))
+        print(f"Model saved at iteration {i}")
 
+    # Add training metrics to the SummaryWriter
+    writer.add_scalar('Training/Accuracy', metrics['accuracy'].compute(), global_step=i)
+
+    # Close the SummaryWriter
+writer.close()
