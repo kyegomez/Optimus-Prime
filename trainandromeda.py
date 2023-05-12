@@ -11,7 +11,10 @@ import numpy as np
 import torch.optim as optim
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, Dataset
+import os
 
+save_dir = './saved_models/'
+save_filename = 'model_checkpoint.pt'
 # constants
 
 NUM_BATCHES = int(1e5)
@@ -22,6 +25,8 @@ VALIDATE_EVERY  = 100
 GENERATE_EVERY  = 500
 GENERATE_LENGTH = 1024
 SEQ_LEN = 1024
+SAVE_EVERY=1000
+
 
 # helpers
 
@@ -90,6 +95,8 @@ optim = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 # training
 
+# training
+
 for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     model.train()
 
@@ -118,4 +125,15 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
         output_str = decode_tokens(sample)
         print(output_str)
 
-        #
+    # Save the model every save_every iterations
+    if i % SAVE_EVERY == 0:
+        # Specify the directory and filename to save the model
+        save_dir = './saved_models/'
+        save_filename = 'model_checkpoint.pt'
+
+        # Create the save directory if it doesn't exist
+        os.makedirs(save_dir, exist_ok=True)
+
+        # Save the model checkpoint
+        torch.save(model.state_dict(), os.path.join(save_dir, save_filename))
+
