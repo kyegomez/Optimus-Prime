@@ -1,5 +1,5 @@
-from x_transformers import TransformerWrapper, Decoder
-from x_transformers.autoregressive_wrapper import AutoregressiveWrapper
+from optimus_prime import TransformerWrapper, Decoder
+from optimus_prime.autoregressive_wrapper import AutoregressiveWrapper
 
 import random
 import tqdm

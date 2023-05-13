@@ -1,4 +1,4 @@
-## x-transformers
+## optimus-prime
 
 [![PyPI version](https://badge.fury.io/py/x-transformers.svg)](https://badge.fury.io/py/x-transformers)
 
@@ -7,7 +7,7 @@ A concise but fully-featured transformer, complete with a set of promising e**x*
 ## Install
 
 ```bash
-$ pip install x-transformers
+$ pip install optimus-prime
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ Full encoder / decoder
 
 ```python
 import torch
-from x_transformers import XTransformer
+from optimus_prime import XTransformer
 
 model = XTransformer(
     dim = 512,
@@ -43,7 +43,7 @@ Decoder-only (GPT-like)
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -80,7 +80,7 @@ Encoder-only (BERT-like)
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Encoder
+from optimus_prime import TransformerWrapper, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -102,7 +102,7 @@ State of the art image classification
 
 ```python
 import torch
-from x_transformers import ViTransformerWrapper, Encoder
+from optimus_prime import ViTransformerWrapper, Encoder
 
 model = ViTransformerWrapper(
     image_size = 256,
@@ -123,7 +123,7 @@ Image -> caption
 
 ```python
 import torch
-from x_transformers import ViTransformerWrapper, TransformerWrapper, Encoder, Decoder
+from optimus_prime import ViTransformerWrapper, TransformerWrapper, Encoder, Decoder
 
 encoder = ViTransformerWrapper(
     image_size = 256,
@@ -157,7 +157,7 @@ decoder(caption, context = encoded) # (1, 1024, 20000)
 
 ```python
 import torch
-from x_transformers import ViTransformerWrapper, XTransformer, Encoder
+from optimus_prime import ViTransformerWrapper, XTransformer, Encoder
 
 # PaLI composes of
 # 1. vision transformer (ViTransformerWrapper) +
@@ -216,7 +216,7 @@ loss.backward()
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -258,7 +258,7 @@ ex.
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -281,7 +281,7 @@ https://arxiv.org/abs/1907.01470
 Proposes adding learned memory key / values prior to attention. They were able to remove feedforwards altogether and attain similar performance to the original transformers. I have found that keeping the feedforwards and adding the memory key / values leads to even better performance.
 
 ```python
-from x_transformers import Decoder, Encoder
+from optimus_prime import Decoder, Encoder
 
 enc = Encoder(
     dim = 512,
@@ -301,7 +301,7 @@ Proposes adding learned tokens, akin to CLS tokens, named memory tokens, that is
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -325,7 +325,7 @@ They experiment with alternatives to Layer normalization and found one that is b
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -343,7 +343,7 @@ You can also use the l2 normalized embeddings proposed as part of `fixnorm`. I h
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -363,7 +363,7 @@ It is recommended you either have either `l2norm_embed` or `post_emb_norm` set t
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -385,7 +385,7 @@ The authors propose to replace layer normalization with a simpler alternative, w
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -409,7 +409,7 @@ Noam Shazeer paper that explores gating in the feedforward, finding that simple 
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -427,7 +427,7 @@ The <a href="https://ai.googleblog.com/2022/04/pathways-language-model-palm-scal
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -450,7 +450,7 @@ You can turn off the feedforward bias as follows
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -472,7 +472,7 @@ This paper used neural architecture search and found an activation, Relu Squared
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, Encoder
+from optimus_prime import TransformerWrapper, Decoder, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -496,7 +496,7 @@ This paper proposes an efficient way to sparsify attention by zeroing all dot-pr
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -520,7 +520,7 @@ A Noam Shazeer paper that proposes mixing information between heads pre and post
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -542,7 +542,7 @@ Yet another Noam Shazeer paper (he's a legend) that proposes to only have one he
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -568,7 +568,7 @@ Update: After some experimentation, I found this variant actually performs worse
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Encoder
+from optimus_prime import TransformerWrapper, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -592,7 +592,7 @@ A quick test shows a small but noticeable improvement, on about the same order a
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Encoder
+from optimus_prime import TransformerWrapper, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -622,7 +622,7 @@ You can experiment with this feature as shown below
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Encoder
+from optimus_prime import TransformerWrapper, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -648,7 +648,7 @@ The authors propose to view the success of transformers from a dynamical systems
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Encoder
+from optimus_prime import TransformerWrapper, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -670,7 +670,7 @@ T5 is one of the most successful encoder / decoder transformer architectures tra
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -694,7 +694,7 @@ This paper from Google proposes residualizing the pre-attention scores across al
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Encoder
+from optimus_prime import TransformerWrapper, Encoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -713,7 +713,7 @@ I also tried residualizing cross attention and may have noticed an improvement i
 
 ```python
 import torch
-from x_transformers import XTransformer
+from optimus_prime import XTransformer
 
 model = XTransformer(
     dim = 512,
@@ -742,7 +742,7 @@ This was recently validated in a <a href="https://keg.cs.tsinghua.edu.cn/glm-130
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -764,7 +764,7 @@ Then, you can retrieve the memories at each step with the `return_mems` keyword 
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model_xl = TransformerWrapper(
     num_tokens = 20000,
@@ -814,7 +814,7 @@ generated = xl_wrapper.generate(prime, 4096)  # (1, 4096)
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model_xl = TransformerWrapper(
     num_tokens = 20000,
@@ -847,7 +847,7 @@ The authors propose gating the residual connections in the transformer network a
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -872,7 +872,7 @@ Highly recommend that you have this turned on whenever you are working on an ord
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -890,7 +890,7 @@ Update (12/2022): Rotary embedding has since been hugely successful, widely adop
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -932,7 +932,7 @@ You can use this type of relative position if you wish to train at smaller seque
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 256,
@@ -959,7 +959,7 @@ Update: There are reports that ALiBi outperform Rotary embeddings for pretrainin
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -988,7 +988,7 @@ Update: When doing BPE encoded tokens, it seems that shift of 2 will bottleneck 
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1006,7 +1006,7 @@ If you want finer control over how much is shifted per block (whether attention 
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1028,7 +1028,7 @@ This technique first made an appearance in <a href="https://arxiv.org/abs/2105.1
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1053,7 +1053,7 @@ model(x)
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1080,7 +1080,7 @@ The first change is to offer per head scaling after aggregating the values in at
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1101,7 +1101,7 @@ The second change is an extra layernorm right after the activation in the feedfo
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1122,7 +1122,7 @@ For the residual scaling, you simply have to set `scale_residual = True`. I have
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1159,7 +1159,7 @@ You can use it as follows
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1181,7 +1181,7 @@ Another update: Simply scaling the cosine similarity (group of 1) with a fixed c
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1211,7 +1211,7 @@ We are nearing the point of wiping out a source of transformer training instabil
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1237,7 +1237,7 @@ Given <a href="https://ai.googleblog.com/2022/04/pathways-language-model-palm-sc
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder
+from optimus_prime import TransformerWrapper, Decoder
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1265,7 +1265,7 @@ You can use this by setting the `mask_prob` on the `AutoregressiveWrapper` class
 
 ```python
 import torch
-from x_transformers import TransformerWrapper, Decoder, AutoregressiveWrapper
+from optimus_prime import TransformerWrapper, Decoder, AutoregressiveWrapper
 
 model = TransformerWrapper(
     num_tokens = 20000,
@@ -1299,7 +1299,7 @@ Cross Attention
 
 ```python
 import torch
-from x_transformers import Encoder, CrossAttender
+from optimus_prime import Encoder, CrossAttender
 
 enc = Encoder(dim = 512, depth = 6)
 model = CrossAttender(dim = 512, depth = 6)
@@ -1319,7 +1319,7 @@ Pass in continuous values
 
 ```python
 import torch
-from x_transformers import ContinuousTransformerWrapper, Decoder
+from optimus_prime import ContinuousTransformerWrapper, Decoder
 
 model = ContinuousTransformerWrapper(
     dim_in = 32,
@@ -1341,8 +1341,8 @@ You can also train a transformer that accepts continuous values autoregressively
 
 ```python
 import torch
-from x_transformers import ContinuousTransformerWrapper, Decoder
-from x_transformers import ContinuousAutoregressiveWrapper
+from optimus_prime import ContinuousTransformerWrapper, Decoder
+from optimus_prime import ContinuousAutoregressiveWrapper
 
 model = ContinuousTransformerWrapper(
     dim_in = 777,

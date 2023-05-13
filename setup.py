@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 
 setup(
-  name = 'x-transformers',
+  name = 'optimus-prime',
   packages = find_packages(exclude=['examples']),
-  version = '1.14.0',
+  version = '1.0.1',
   license='MIT',
-  description = 'X-Transformers - Pytorch',
-  author = 'Phil Wang',
-  author_email = 'lucidrains@gmail.com',
-  url = 'https://github.com/lucidrains/x-transformers',
+  description = 'optimus-prime - Pytorch',
+  author = 'Kye Gomez',
+  author_email = 'kye@apac.ai',
+  url = 'https://github.com/kyegomez/Optimus-Prime',
   long_description_content_type = 'text/markdown',
   keywords = [
     'artificial intelligence',

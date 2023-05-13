@@ -1,4 +1,4 @@
-from x_transformers import (
+from optimus_prime import (
     TransformerWrapper,
     Encoder,
     NonAutoregressiveWrapper

@@ -1,7 +1,8 @@
 
+
 from torch.serialization import load
 import torch 
-from x_transformers import TransformerWrapper, Decoder, AutoregressiveWrapper
+from optimus_prime import TransformerWrapper, Decoder, AutoregressiveWrapper
 
 #training
 import random
@@ -44,7 +45,7 @@ def decode_tokens(tokens):
 
 model = TransformerWrapper(
     num_tokens=20000,
-    max_seq_len=5000,
+    max_seq_len=200000,
     use_abs_pos_emb = False,
     attn_layers = Decoder(
         dim=512,
@@ -69,7 +70,7 @@ model.cuda()
 with gzip.open('./enwik8.gz') as file:
   data = np.frombuffer(file.read(int(95e6)), dtype=np.uint8).copy()
   train_x, valid_x = np.split(data, [int(90e6)])
-  data_train, data_val = torch.from_numpy(train_x), torch.from_numpy(valid_x)
+  data_train, data_val = torch.from_numpy(train_x), torch.from_numpy(valid_x) #.cuda()??
 
 class TextSamplerDataset(Dataset):
     def __init__(self, data, seq_len):

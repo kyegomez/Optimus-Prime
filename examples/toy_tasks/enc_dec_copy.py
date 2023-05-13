@@ -1,7 +1,7 @@
 import tqdm
 import torch
 import torch.optim as optim
-from x_transformers import XTransformer
+from optimus_prime import XTransformer
 
 # constants
 

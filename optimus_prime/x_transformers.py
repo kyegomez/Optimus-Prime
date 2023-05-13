@@ -1,3 +1,6 @@
+#add ability to choose your own tokenizer, and embedder, and ask what else can be done for production level training
+
+
 import math
 from random import random
 
@@ -14,8 +17,10 @@ from typing import List
 from einops import rearrange, repeat, reduce
 from einops.layers.torch import Rearrange
 
-from x_transformers.attend import Attend, Intermediates
-from x_transformers.autoregressive_wrapper import AutoregressiveWrapper
+from optimus_prime.attend import Attend, Intermediates
+from optimus_prime.autoregressive_wrapper import AutoregressiveWrapper
+
+from abc import ABC, abstractmethod
 
 # constants
 
@@ -169,14 +174,36 @@ def dropout_seq(seq, mask, dropout):
 class ReluSquared(nn.Module):
     def forward(self, x):
         return F.relu(x) ** 2
+    
+
+#tokenization
+class BaseTokenizer(ABC):
+    @abstractmethod
+    def tokenize(self, text: str) -> List[int]:
+        pass
+
+class CustomTokenizer(BaseTokenizer):
+    def tokenize(self, text: str) -> List[int]:
+        # Your custom tokenization algorithm
+        tokens = ...
+        return tokens
 
 # embedding
 
+class BaseEmbedding(ABC):
+    @abstractmethod
+    def get_embedding(self, num_tokens: int, dim: int) -> nn.Module:
+        #custom embedding function or model
+        embedding = ...
+        return embedding
+    
+
 class TokenEmbedding(nn.Module):
-    def __init__(self, dim, num_tokens, l2norm_embed = False):
+    def __init__(self, dim, num_tokens, embedding_provider: BaseEmbedding, l2norm_embed = False):
         super().__init__()
         self.l2norm_embed = l2norm_embed
-        self.emb = nn.Embedding(num_tokens, dim)
+        self.emb = embedding_provider.get_embedding(num_tokens, dim)
+            # nn.Embedding(num_tokens, dim)
 
     def forward(self, x):
         token_emb = self.emb(x)
@@ -1230,6 +1257,8 @@ class TransformerWrapper(nn.Module):
         num_tokens,
         max_seq_len,
         attn_layers,
+        tokenizer: BaseTokenizer,
+        embedding_provider: BaseEmbedding,
         emb_dim = None,
         max_mem_len = 0.,
         shift_mem_down = 0,
@@ -1248,6 +1277,13 @@ class TransformerWrapper(nn.Module):
 
         dim = attn_layers.dim
         emb_dim = default(emb_dim, dim)
+
+        # your own tokenizer
+        self.tokenizer = tokenizer
+
+        #your own embedding function
+        self.token_emb = TokenEmbedding(emb_dim, num_tokens, embedding_provider, l2norm_embed=l2norm_embed)
+
         self.emb_dim = emb_dim
         self.num_tokens = num_tokens
 
