@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
   name = 'optimus-prime-transformers',
   packages = find_packages(exclude=['examples']),
-  version = '1.0.8',
+  version = '1.0.9',
   license='MIT',
   description = 'optimus-prime - Pytorch',
   author = 'Kye Gomez',
