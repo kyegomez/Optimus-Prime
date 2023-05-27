@@ -2,7 +2,7 @@
 
 from torch.serialization import load
 import torch 
-from optimus_prime import TransformerWrapper, Decoder, AutoregressiveWrapper
+from optimus_prime_transformers import TransformerWrapper, Decoder, AutoregressiveWrapper
 
 #training
 import random
