@@ -42,7 +42,7 @@ def decode_tokens(tokens):
 # Model
 model = TransformerWrapper(
     num_tokens=20000,
-    max_seq_len=200000,
+    max_seq_len=8192,
     use_abs_pos_emb=False,
     embedding_provider=AndromedaEmbedding(),
     attn_layers=Decoder(
@@ -54,7 +54,7 @@ model = TransformerWrapper(
         alibi_num_heads=4, 
         rotary_xpos=True,
         attn_flash=True, 
-        shift_tokens=1, 
+        # shift_tokens=1, 
         attn_one_kv_head=True, 
         qk_norm=True, 
         attn_qk_norm=True, 
