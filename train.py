@@ -66,7 +66,7 @@ model = AutoregressiveWrapper(model)
 model.cuda()
 
 
-with gzip.open('./data/enwik8.gz') as file:
+with gzip.open('./enwik8.gz') as file:
     data = np.frombuffer(file.read(int(95e6)), dtype=np.uint8).copy()
     train_x, valid_x = np.split(data, [int(90e6)])
     data_train, data_val = torch.from_numpy(train_x), torch.from_numpy(valid_x)
