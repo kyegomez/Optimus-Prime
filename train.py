@@ -1,3 +1,4 @@
+
 import os
 import gzip
 import tqdm
@@ -10,7 +11,9 @@ from torch.utils.data import Dataset, DataLoader
 
 from optimus_prime import TransformerWrapper, Decoder, AutoregressiveWrapper, AndromedaEmbedding
 
-# Constants
+
+# constants
+
 NUM_BATCHES = int(1e5)
 BATCH_SIZE = 4
 GRADIENT_ACCUMULATE_EVERY = 2
@@ -19,7 +22,22 @@ VALIDATE_EVERY  = 100
 GENERATE_EVERY  = 500
 GENERATE_LENGTH = 1024
 SEQ_LEN = 1024
-SAVE_EVERY = 500
+SAVE_EVERY=500
+
+
+# helpers
+
+def cycle(loader):
+    while True:
+        for data in loader:
+            yield data
+
+def decode_token(token):
+    return str(chr(max(32, token)))
+
+def decode_tokens(tokens):
+    return ''.join(list(map(decode_token, tokens)))
+
 
 # Model
 model = TransformerWrapper(
