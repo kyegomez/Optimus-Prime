@@ -1274,7 +1274,7 @@ class TransformerWrapper(nn.Module):
         max_seq_len,
         attn_layers,
         # tokenizer: BaseTokenizer,
-        embedding_provider: BaseEmbedding,
+        embedding_provider,
         emb_dim = None,
         max_mem_len = 0.,
         shift_mem_down = 0,
