@@ -47,6 +47,7 @@ model = TransformerWrapper(
     num_tokens=20000,
     max_seq_len=200000,
     use_abs_pos_emb = False,
+    embedding_provider=AndromedaEmbedding(),
     attn_layers = Decoder(
         dim=512,
         depth=6,
@@ -61,7 +62,6 @@ model = TransformerWrapper(
         qk_norm=True, 
         attn_qk_norm=True, 
         attn_qk_norm_dim_scale=True, 
-        embedding_provider=AndromedaEmbedding()
     )
 )
 
