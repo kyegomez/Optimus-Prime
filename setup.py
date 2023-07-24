@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-  name = 'optimus-prime',
+  name = 'optimus-prime-transformers',
   packages = find_packages(exclude=['examples']),
   version = '1.1.6',
   license='MIT',
@@ -16,8 +16,8 @@ setup(
     'transformers'
   ],
   install_requires=[
-    'torch>=1.6',
-    'einops>=0.6.1'
+    'torch',
+    'einops'
   ],
   classifiers=[
     'Development Status :: 4 - Beta',
