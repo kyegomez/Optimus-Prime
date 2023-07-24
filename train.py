@@ -99,6 +99,7 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
 
     for __ in range(GRADIENT_ACCUMULATE_EVERY):
         loss, _ = model(next(iter(train_loader)))  # Unpack the tuple here
+        loss = loss.mean()  # Ensure the loss is a scalar
         (loss / GRADIENT_ACCUMULATE_EVERY).backward()
 
     print(f'training loss: {loss.item()}')
@@ -110,6 +111,7 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
         model.eval()
         with torch.no_grad():
             val_loss, _ = model(next(iter(val_loader)))  # Unpack the tuple here
+            val_loss = val_loss.mean()  # Ensure the loss is a scalar
             print(f'validation loss: {val_loss.item()}')
 
     if i % GENERATE_EVERY == 0:
