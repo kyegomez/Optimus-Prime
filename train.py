@@ -16,7 +16,7 @@ from optimus_prime import TransformerWrapper, Decoder, AutoregressiveWrapper, An
 
 NUM_BATCHES = int(1e5)
 BATCH_SIZE = 4
-GRADIENT_ACCUMULATE_EVERY = 0
+GRADIENT_ACCUMULATE_EVERY = 1
 LEARNING_RATE = 1e-4
 VALIDATE_EVERY  = 100
 GENERATE_EVERY  = 500
@@ -95,18 +95,21 @@ val_loader    = cycle(DataLoader(val_dataset, batch_size = BATCH_SIZE, drop_last
 optim = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 # training
-
+# Training
 for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     model.train()
 
+    loss = None  # Initialize loss
     for __ in range(GRADIENT_ACCUMULATE_EVERY):
         loss = model(next(train_loader))
         (loss / GRADIENT_ACCUMULATE_EVERY).backward()
 
-    print(f'training loss: {loss.item()}')
-    torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
-    optim.step()
-    optim.zero_grad()
+    # Check if loss is not None before printing and stepping optimizer
+    if loss is not None:
+        print(f'training loss: {loss.item()}')
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
+        optim.step()
+        optim.zero_grad()
 
     if i % VALIDATE_EVERY == 0:
         model.eval()
