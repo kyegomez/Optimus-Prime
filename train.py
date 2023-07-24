@@ -111,7 +111,7 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
         model.eval()
         with torch.no_grad():
             val_loss, _ = model(next(iter(val_loader)))  # Unpack the tuple here
-            val_loss = val_loss.mean()  # Ensure the loss is a scalar
+            val_loss = val_loss.mean()  # Ensure the loss is a scalar wewioewoeiwoe
             print(f'validation loss: {val_loss.item()}')
 
     if i % GENERATE_EVERY == 0:
@@ -119,7 +119,7 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
         inp = random.choice(val_dataset)[:-1]
         sample = model.generate(inp, GENERATE_LENGTH)
         output_str = decode_tokens(sample)
-        print(output_str)
+        print(output_str) #
 
     if i % SAVE_EVERY == 0:
         torch.save(model.state_dict(), f'./saved_models/model_checkpoint_{i}.pt')
