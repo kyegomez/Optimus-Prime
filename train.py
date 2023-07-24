@@ -95,11 +95,11 @@ val_loader    = cycle(DataLoader(val_dataset, batch_size = BATCH_SIZE, drop_last
 optim = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 # training
-# Training
+# Tr# Training
 for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     model.train()
 
-    loss = model(next(train_loader))
+    loss, _ = model(next(train_loader))  # Unpack the tuple
     loss.backward()
 
     print(f'training loss: {loss.item()}')
@@ -110,7 +110,7 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     if i % VALIDATE_EVERY == 0:
         model.eval()
         with torch.no_grad():
-            loss = model(next(val_loader))
+            loss, _ = model(next(val_loader))  # Unpack the tuple
             print(f'validation loss: {loss.item()}')
 
     if i % GENERATE_EVERY == 0:
