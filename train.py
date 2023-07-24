@@ -65,8 +65,8 @@ model = TransformerWrapper(
 model = AutoregressiveWrapper(model)
 model.cuda()
 
-# Dataset
-with gzip.open('./enwik8.gz') as file:
+
+with gzip.open('./data/enwik8.gz') as file:
     data = np.frombuffer(file.read(int(95e6)), dtype=np.uint8).copy()
     train_x, valid_x = np.split(data, [int(90e6)])
     data_train, data_val = torch.from_numpy(train_x), torch.from_numpy(valid_x)
@@ -86,41 +86,40 @@ class TextSamplerDataset(Dataset):
         return self.data.size(0) // self.seq_len
 
 train_dataset = TextSamplerDataset(data_train, SEQ_LEN)
-val_dataset = TextSamplerDataset(data_val, SEQ_LEN)
-train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
-val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
+val_dataset   = TextSamplerDataset(data_val, SEQ_LEN)
+train_loader  = cycle(DataLoader(train_dataset, batch_size = BATCH_SIZE, drop_last = True))
+val_loader    = cycle(DataLoader(val_dataset, batch_size = BATCH_SIZE, drop_last = True))
 
-# Optimizer
-optimizer = Adam(model.parameters(), lr=LEARNING_RATE)
+# optimizer
 
-# Training
+optim = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+
+# training
+
 for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     model.train()
 
     for __ in range(GRADIENT_ACCUMULATE_EVERY):
-        loss, _ = model(next(iter(train_loader)))  # Unpack the tuple here
-        loss = loss.mean()  # Ensure the loss is a scalar
+        loss = model(next(train_loader))
         (loss / GRADIENT_ACCUMULATE_EVERY).backward()
 
     print(f'training loss: {loss.item()}')
-    nn.utils.clip_grad_norm_(model.parameters(), 0.5)
-    optimizer.step()
-    optimizer.zero_grad()
+    torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
+    optim.step()
+    optim.zero_grad()
 
     if i % VALIDATE_EVERY == 0:
         model.eval()
         with torch.no_grad():
-            val_loss, _ = model(next(iter(val_loader)))  # Unpack the tuple here
-            val_loss = val_loss.mean()  # Ensure the loss is a scalar 
-            print(f'validation loss: {val_loss.item()}')
+            loss = model(next(val_loader))
+            print(f'validation loss: {loss.item()}')
 
     if i % GENERATE_EVERY == 0:
         model.eval()
         inp = random.choice(val_dataset)[:-1]
+        prime = decode_tokens(inp)
+        print(f'%s \n\n %s', (prime, '*' * 100))
+
         sample = model.generate(inp, GENERATE_LENGTH)
         output_str = decode_tokens(sample)
-        print(output_str) #
-
-    if i % SAVE_EVERY == 0:
-        torch.save(model.state_dict(), f'./saved_models/model_checkpoint_{i}.pt')
-        print(f"Model saved at iteration {i}")
+        print(output_str)
