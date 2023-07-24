@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-  name = 'optimus-prime-transformers',
+  name = 'optimus-prime',
   packages = find_packages(exclude=['examples']),
   version = '1.1.6',
   license='MIT',
