@@ -2,7 +2,7 @@
 
 from torch.serialization import load
 import torch 
-from optimus_prime import TransformerWrapper, Decoder, AutoregressiveWrapper
+from optimus_prime import TransformerWrapper, Decoder, AutoregressiveWrapper, AndromedaEmbedding
 
 #training
 import random
@@ -51,17 +51,21 @@ model = TransformerWrapper(
         dim=512,
         depth=6,
         heads=8,
-        alibi_pos_bias=True,
-        alibi_num_heads=4,
+        use_abs_pos_emb=False, 
+        alibi_pos_bias=True, 
+        alibi_num_heads=4, 
         rotary_xpos=True,
-        attn_flash = True,
-        deepnorm=True,
-        # dynamic_pos_bias=True,
-        # dynamic_pos_bias_log_distance=False,
-        shift_tokens=1,
-        # rel_pos_bias=True
+        attn_flash=True, 
+        shift_tokens=1, 
+        attn_one_kv_head=True, 
+        qk_norm=True, 
+        attn_qk_norm=True, 
+        attn_qk_norm_dim_scale=True, 
+        embedding_provider=AndromedaEmbedding()
     )
 )
+
+
 
 
 model = AutoregressiveWrapper(model)
