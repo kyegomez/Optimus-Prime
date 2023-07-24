@@ -99,17 +99,13 @@ optim = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
     model.train()
 
-    loss = None  # Initialize loss
-    for __ in range(GRADIENT_ACCUMULATE_EVERY):
-        loss = model(next(train_loader))
-        (loss / GRADIENT_ACCUMULATE_EVERY).backward()
+    loss = model(next(train_loader))
+    loss.backward()
 
-    # Check if loss is not None before printing and stepping optimizer
-    if loss is not None:
-        print(f'training loss: {loss.item()}')
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
-        optim.step()
-        optim.zero_grad()
+    print(f'training loss: {loss.item()}')
+    torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
+    optim.step()
+    optim.zero_grad()
 
     if i % VALIDATE_EVERY == 0:
         model.eval()
