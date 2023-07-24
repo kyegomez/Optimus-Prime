@@ -125,7 +125,7 @@ class AutoregressiveWrapper(nn.Module):
 
         return out
 
-    def forward(self, x, **kwargs):
+    def forward(self, x, return_loss=True, **kwargs):
         seq, ignore_index = x.shape[1], self.ignore_index
 
         inp, target = x[:, :-1], x[:, 1:]
@@ -146,4 +146,7 @@ class AutoregressiveWrapper(nn.Module):
             ignore_index = ignore_index
         )
 
-        return loss
+        if return_loss:
+            return logits, loss
+
+        return logits

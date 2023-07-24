@@ -17,10 +17,11 @@ from typing import List
 from einops import rearrange, repeat, reduce
 from einops.layers.torch import Rearrange
 
-from optimus_prime_transformers.attend import Attend, Intermediates
-from optimus_prime_transformers.autoregressive_wrapper import AutoregressiveWrapper
+from optimus_prime.attend import Attend, Intermediates
+from optimus_prime.autoregressive_wrapper import AutoregressiveWrapper
 
 from abc import ABC, abstractmethod
+# import bitsandbytes as bnb
 
 # constants
 
@@ -28,7 +29,7 @@ DEFAULT_DIM_HEAD = 64
 
 @dataclass
 class LayerIntermediates:
-    hiddens: List[Tensor] = None,
+    hiddens: List[Tensor] = None
     attn_intermediates: List[Intermediates] = None
 
 # helpers
@@ -193,17 +194,29 @@ class CustomTokenizer(BaseTokenizer):
 class BaseEmbedding(ABC):
     @abstractmethod
     def get_embedding(self, num_tokens: int, dim: int) -> nn.Module:
-        #custom embedding function or model
+        # Custom embedding function or model
         embedding = ...
+        
+        return embedding
+
+class AndromedaEmbedding(BaseEmbedding):
+    def get_embedding(self, num_tokens: int, dim: int) -> nn.Module:
+        embedding = nn.Embedding(num_tokens, dim)
+
         return embedding
     
+# class AndromedaBnBEmbedding(BaseEmbedding):
+#     def get_embedding(self, num_tokens: int, dim: int, padding_idx: int = 0) -> bnb.nn.modules:
+#         embedding = bnb.nn.modules.Embedding(num_tokens, dim, padding_idx)
+
+#         return embedding
 
 class TokenEmbedding(nn.Module):
     def __init__(self, dim, num_tokens, embedding_provider: BaseEmbedding, l2norm_embed = False):
         super().__init__()
         self.l2norm_embed = l2norm_embed
         self.emb = embedding_provider.get_embedding(num_tokens, dim)
-            # nn.Embedding(num_tokens, dim)
+        # nn.Embedding(num_tokens, dim)
 
     def forward(self, x):
         token_emb = self.emb(x)
@@ -889,7 +902,7 @@ class AttentionLayers(nn.Module):
         self,
         dim,
         depth,
-        heads = 8,
+        heads = None,
         causal = False,
         cross_attend = False,
         only_cross = False,
@@ -979,6 +992,7 @@ class AttentionLayers(nn.Module):
         assert (int(sandwich_norm) + int(resi_dual)) <= 1, 'either sandwich norm or resiDual is selected, but not both'
         assert not (not pre_norm and sandwich_norm), 'sandwich norm cannot be used when not using prenorm'
         assert not (not pre_norm and resi_dual), 'resiDualcannot be used when not using prenorm'
+
         self.pre_norm = pre_norm
         self.sandwich_norm = sandwich_norm
         self.resi_dual = resi_dual
@@ -1082,6 +1096,8 @@ class AttentionLayers(nn.Module):
                 residual
             ]))
 
+            self.layers_length = len(self.layers) # It doesn't work if called after
+
         if deepnorm:
             init_gain = (8 * depth) ** -0.25
             deepnorm_init(self, init_gain)
@@ -1114,7 +1130,7 @@ class AttentionLayers(nn.Module):
         outer_residual = x
 
         for ind, (layer_type, (norm, block, residual_fn), layer_dropout) in enumerate(zip(self.layer_types, self.layers, self.layer_dropouts)):
-            is_last = ind == (len(self.layers) - 1)
+            is_last = ind == (self.layers_length - 1)
 
             if self.training and layer_dropout > 0. and random() < layer_dropout:
                 continue
@@ -1257,7 +1273,7 @@ class TransformerWrapper(nn.Module):
         num_tokens,
         max_seq_len,
         attn_layers,
-        tokenizer: BaseTokenizer,
+        # tokenizer: BaseTokenizer,
         embedding_provider: BaseEmbedding,
         emb_dim = None,
         max_mem_len = 0.,
@@ -1273,13 +1289,14 @@ class TransformerWrapper(nn.Module):
         emb_frac_gradient = 1. # GLM-130B and Cogview successfully used this, set at 0.1
     ):
         super().__init__()
+
         assert isinstance(attn_layers, AttentionLayers), 'attention layers must be one of Encoder or Decoder'
 
         dim = attn_layers.dim
         emb_dim = default(emb_dim, dim)
 
         # your own tokenizer
-        self.tokenizer = tokenizer
+        # self.tokenizer = tokenizer
 
         #your own embedding function
         self.token_emb = TokenEmbedding(emb_dim, num_tokens, embedding_provider, l2norm_embed=l2norm_embed)
@@ -1292,7 +1309,7 @@ class TransformerWrapper(nn.Module):
         self.shift_mem_down = shift_mem_down
 
         self.l2norm_embed = l2norm_embed
-        self.token_emb = TokenEmbedding(emb_dim, num_tokens, l2norm_embed = l2norm_embed)
+        self.token_emb = TokenEmbedding(emb_dim, num_tokens, embedding_provider, l2norm_embed=l2norm_embed)
 
         if not (use_abs_pos_emb and not attn_layers.has_pos_emb):
             self.pos_emb = always(0)
@@ -1324,8 +1341,10 @@ class TransformerWrapper(nn.Module):
     def init_(self):
         if self.l2norm_embed:
             nn.init.normal_(self.token_emb.emb.weight, std = 1e-5)
+
             if not isinstance(self.pos_emb, always):
                 nn.init.normal_(self.pos_emb.emb.weight, std = 1e-5)
+
             return
 
         nn.init.kaiming_normal_(self.token_emb.emb.weight)
@@ -1367,6 +1386,7 @@ class TransformerWrapper(nn.Module):
 
         if exists(prepend_embeds):
             prepend_seq, prepend_dim = prepend_embeds.shape[1:]
+
             assert prepend_dim == x.shape[-1], 'prepended embeddings need to have same dimensions as text model dimensions'
 
             x = torch.cat((prepend_embeds, x), dim = -2)
@@ -1375,6 +1395,7 @@ class TransformerWrapper(nn.Module):
 
         if emb_frac_gradient < 1:
             assert emb_frac_gradient > 0
+
             x = x * emb_frac_gradient + x.detach() * (1 - emb_frac_gradient)
 
         # embedding dropout
