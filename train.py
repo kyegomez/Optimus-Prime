@@ -16,7 +16,7 @@ from optimus_prime import TransformerWrapper, Decoder, AutoregressiveWrapper, An
 
 NUM_BATCHES = int(1e5)
 BATCH_SIZE = 4
-GRADIENT_ACCUMULATE_EVERY = 2
+GRADIENT_ACCUMULATE_EVERY = 1
 LEARNING_RATE = 1e-4
 VALIDATE_EVERY  = 100
 GENERATE_EVERY  = 500
