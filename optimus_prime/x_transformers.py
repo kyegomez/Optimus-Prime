@@ -438,7 +438,10 @@ class RotaryEmbedding(nn.Module):
         self,
         dim,
         use_xpos = False,
-        scale_base = 512
+        scale_base = 512,
+        interpolated = False,
+        max_postion_embeddings=None, #2048
+        base=None, #10000
     ):
         super().__init__()
         inv_freq = 1. / (10000 ** (torch.arange(0, dim, 2).float() / dim))
@@ -454,18 +457,32 @@ class RotaryEmbedding(nn.Module):
         self.register_buffer('scale', scale)
 
     def forward(self, seq_len, device):
-        t = torch.arange(seq_len, device = device).type_as(self.inv_freq)
-        freqs = torch.einsum('i , j -> i j', t, self.inv_freq)
-        freqs = torch.cat((freqs, freqs), dim = -1)
 
-        if not exists(self.scale):
-            return freqs, 1.
+        if self.interpolated:
+            max_position_embeddings = self.max_position_embeddings
+            self.max_seq_len_cached = max_position_embeddings
+            t = torch.arange(
+                self.max_seq_len_cached,
+                device=self.inv_freq.device,
+                dtype=self.inv_freq.dtype,
+            )
+            #interpolation
+            self.scale = 1 / 4
+            t *= self.scale
+        else:
+                
+            t = torch.arange(seq_len, device = device).type_as(self.inv_freq)
+            freqs = torch.einsum('i , j -> i j', t, self.inv_freq)
+            freqs = torch.cat((freqs, freqs), dim = -1)
 
-        power = (torch.arange(seq_len, device = device) - (seq_len // 2)) / self.scale_base
-        scale = self.scale ** rearrange(power, 'n -> n 1')
-        scale = torch.cat((scale, scale), dim = -1)
+            if not exists(self.scale):
+                return freqs, 1.
 
-        return freqs, scale
+            power = (torch.arange(seq_len, device = device) - (seq_len // 2)) / self.scale_base
+            scale = self.scale ** rearrange(power, 'n -> n 1')
+            scale = torch.cat((scale, scale), dim = -1)
+
+            return freqs, scale
 
 
 def rotate_half(x):
