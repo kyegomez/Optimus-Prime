@@ -56,6 +56,7 @@ class Attend(nn.Module):
         talking_heads = False,
         scale = None,
         qk_norm = False,
+        add_zero_kv=False,
         flash = False,
     ):
         super().__init__()
@@ -66,6 +67,8 @@ class Attend(nn.Module):
 
         self.dropout = dropout
         self.attn_dropout = nn.Dropout(dropout)
+
+        self.add_zero_kv = add_zero_kv
 
         # talking heads
 
@@ -194,6 +197,15 @@ class Attend(nn.Module):
         n, device = q.shape[-2], q.device
 
         scale = default(self.scale, q.shape[-1] ** -0.5)
+
+        if self.add_zero_kv:
+            k, v = map(lambda t: F.pad(t, (0, 0, 1, 0), value=0.), (k, v))
+
+            if exists(mask):
+                mask = F.pad(mask, (1, 0), value=True)
+
+            if exists(attn_bias):
+                attn_bias = F.pad(attn_bias, (1, 0), value=0.)
 
         if self.flash:
             assert not exists(prev_attn), 'residual attention not compatible with flash attention'
