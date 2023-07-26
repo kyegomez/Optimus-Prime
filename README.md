@@ -1875,3 +1875,10 @@ generated = model.generate(start_emb, 17) # (17, 777)
 ```
 
 *solve intelligence... then use that to solve everything else.* - Demis Hassabis
+
+
+
+## Todo
+* Integrate flash attention 2.0 cuda and make it optional so if set to true it'll download then compile
+* Integrate dynamic sparse attention in triton
+* Integrate Parallelization and distributed setup of The Attention

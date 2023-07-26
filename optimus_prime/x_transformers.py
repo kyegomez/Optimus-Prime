@@ -679,7 +679,8 @@ class Attention(nn.Module):
         one_kv_head = False,
         shared_kv = False,
         value_dim_head = None,
-        tensor_product = False   # https://arxiv.org/abs/2208.06061
+        tensor_product = False,  # https://arxiv.org/abs/2208.06061
+        add_zero_kv = False
     ):
         super().__init__()
         self.scale = dim_head ** -0.5
@@ -740,6 +741,7 @@ class Attention(nn.Module):
             dropout = dropout,
             qk_norm = qk_norm,
             scale = qk_norm_scale if qk_norm else self.scale,
+            add_zero_kv=add_zero_kv,
             flash = flash
         )
 
