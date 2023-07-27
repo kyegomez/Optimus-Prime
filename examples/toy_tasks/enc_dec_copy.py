@@ -66,6 +66,6 @@ for i in tqdm.tqdm(range(NUM_BATCHES), mininterval=10., desc='training'):
         sample = model.generate(src, start_tokens, ENC_SEQ_LEN, mask = src_mask)
         incorrects = (src != sample).abs().sum()
 
-        print(f"input:  ", src)
-        print(f"predicted output:  ", sample)
+        print("input:  ", src)
+        print("predicted output:  ", sample)
         print(f"incorrects: {incorrects}")

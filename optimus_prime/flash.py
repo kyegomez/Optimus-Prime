@@ -1,12 +1,10 @@
 import math
 import torch
-from functools import partial
 from torch import nn, einsum
 from torch.autograd.function import Function
 
 from einops import rearrange
 
-from torch.jit import fork, wait
 
 from torch.cuda.amp import autocast, GradScaler
 from torch.nn import DataParallel

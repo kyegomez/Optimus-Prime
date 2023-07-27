@@ -4,13 +4,11 @@ from optimus_prime_transformers import (
     NonAutoregressiveWrapper
 )
 
-import random
 import tqdm
 import gzip
 import numpy as np
 import torch
 import torch.optim as optim
-from torch.nn import functional as F
 from torch.utils.data import DataLoader, Dataset
 
 # constants
