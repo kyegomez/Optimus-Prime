@@ -7,7 +7,7 @@ A concise but fully-featured transformer, complete with a set of promising e**x*
 ## Install
 
 ```bash
-$ pip install optimus-prime-transformers
+$ pip install primus
 ```
 
 ## Usage
