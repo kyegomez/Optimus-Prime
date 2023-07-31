@@ -129,3 +129,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+optimus_prime/__pycache__
+.ruff_cache
