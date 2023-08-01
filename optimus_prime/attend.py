@@ -10,11 +10,9 @@ from packaging import version
 from dataclasses import dataclass
 
 from einops import rearrange
-
 from optimus_prime.flash import FlashAttention
 
 # constants
-
 EfficientAttentionConfig = namedtuple('EfficientAttentionConfig', ['enable_flash', 'enable_math', 'enable_mem_efficient'])
 
 @dataclass
