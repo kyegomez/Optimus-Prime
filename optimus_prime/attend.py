@@ -11,7 +11,7 @@ from dataclasses import dataclass
 
 from einops import rearrange
 
-# from flash import FlashAttention
+from optimus_prime.flash import FlashAttention
 
 # constants
 
@@ -50,6 +50,12 @@ class Attend(nn.Module):
     def __init__(
         self,
         *,
+        dim,
+        dim_head,
+        q_bucket_size,
+        k_bucket_size,
+        parallel,
+        mixed_precision,
         dropout = 0.,
         causal = False,
         heads = None,
@@ -58,6 +64,7 @@ class Attend(nn.Module):
         qk_norm = False,
         add_zero_kv=False,
         flash = False,
+        Flash2 = False
     ):
         super().__init__()
         self.scale = scale
@@ -78,6 +85,20 @@ class Attend(nn.Module):
         if talking_heads:
             self.pre_softmax_talking_heads = nn.Conv2d(heads, heads, 1, bias = False)
             self.post_softmax_talking_heads = nn.Conv2d(heads, heads, 1, bias = False)
+
+        self.Flash2 = Flash2
+        if Flash2:
+            self.flash_attention = FlashAttention(
+                dim = dim,
+                heads = heads,
+                dim_head = dim_head,
+                causal = causal,
+                q_bucket_size = q_bucket_size,
+                k_bucket_size = k_bucket_size,
+                parallel = parallel,
+                mixed_precision = mixed_precision
+            )
+
 
         # flash attention
 
@@ -211,6 +232,9 @@ class Attend(nn.Module):
             assert not exists(prev_attn), 'residual attention not compatible with flash attention'
             return self.flash_attn(q, k, v, mask = mask, attn_bias = attn_bias)
             # return FlashAttention(q, k, v, mask=mask, attn_bias=attn_bias )
+        
+        if self.Flash2:
+            return self.flash_attention(q, k, v, mask=mask, attn_bias=attn_bias)
 
         kv_einsum_eq = 'b j d' if k.ndim == 3 else 'b h j d'
 
