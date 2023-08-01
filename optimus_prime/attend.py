@@ -228,7 +228,7 @@ class Attend(nn.Module):
 
         if self.flash:
             assert not exists(prev_attn), 'residual attention not compatible with flash attention'
-            return self.flash_attn(q, k, v, mask = mask, attn_bias = attn_bias)
+            return self.flash_attn(q, k, v, attn_bias = attn_bias)
             # return FlashAttention(q, k, v, mask=mask, attn_bias=attn_bias )
         
         if self.Flash2:

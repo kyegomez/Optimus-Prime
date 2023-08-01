@@ -6,5 +6,5 @@ q = torch.randn(1, 8, 512, 64)
 k = torch.randn(1, 8, 512, 64)
 v = torch.randn(1, 8, 512, 64)
 
-out, _ = model(q, k, v, mask=0.1)
+out, _ = model(q, k, v)
 assert out.shape == (1, 8, 512, 64)
