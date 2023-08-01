@@ -232,7 +232,7 @@ class Attend(nn.Module):
             # return FlashAttention(q, k, v, mask=mask, attn_bias=attn_bias )
         
         if self.Flash2:
-            return self.flash_attention(q, k, v, mask=mask, bias=attn_bias)
+            return self.flash_attention(q, k, v, bias=attn_bias)
 
         kv_einsum_eq = 'b j d' if k.ndim == 3 else 'b h j d'
 
