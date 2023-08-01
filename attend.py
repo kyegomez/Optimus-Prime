@@ -68,7 +68,7 @@ def test_error_rate():
 ########################## FLASH ATTENTIO 2.0
 def test_forward_pass_flash2():
     logger.info("Running forward pass test for Flash Attention 2.0...")
-    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True, qk_norm=True, add_zero_kv=True)
+    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True)
     q = torch.randn(1, 8, 512, 64)
     k = torch.randn(1, 8, 512, 64)
     v = torch.randn(1, 8, 512, 64)
@@ -78,7 +78,7 @@ def test_forward_pass_flash2():
 
 def test_backward_pass_flash2():
     logger.info("Running backward pass test for Flash Attention 2.0...")
-    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True, qk_norm=True, add_zero_kv=True)
+    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True)
     q = torch.randn(1, 8, 512, 64, requires_grad=True)
     k = torch.randn(1, 8, 512, 64, requires_grad=True)
     v = torch.randn(1, 8, 512, 64, requires_grad=True)
@@ -91,7 +91,7 @@ def test_backward_pass_flash2():
 
 def test_memory_usage_flash2():
     logger.info("Running memory usage test for Flash Attention 2.0...")
-    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True, qk_norm=True, add_zero_kv=True)
+    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True)
     q = torch.randn(1, 8, 512, 64)
     k = torch.randn(1, 8, 512, 64)
     v = torch.randn(1, 8, 512, 64)
@@ -104,7 +104,7 @@ def test_memory_usage_flash2():
 def test_execution_time_flash2():
     import time
     logger.info("Running execution time test for Flash Attention 2.0...")
-    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True, qk_norm=True, add_zero_kv=True)
+    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True)
     q = torch.randn(1, 8, 512, 64)
     k = torch.randn(1, 8, 512, 64)
     v = torch.randn(1, 8, 512, 64)
@@ -116,7 +116,7 @@ def test_execution_time_flash2():
 
 def test_error_rate_flash2():
     logger.info("Running error rate test for Flash Attention 2.0...")
-    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True, qk_norm=True, add_zero_kv=True)
+    model = Attend(dim=512, dim_head=64, q_bucket_size=128, k_bucket_size=128, parallel=False, mixed_precision=False, Flash2=True)
     q = torch.randn(1, 8, 512, 64)
     k = torch.randn(1, 8, 512, 64)
     v = torch.randn(1, 8, 512, 64)
