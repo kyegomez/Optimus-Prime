@@ -65,6 +65,13 @@ def test_error_rate():
     assert (out != out).sum() == 0  # no NaN values
     logger.info("Error rate test passed.")
 
+
+
+
+
+
+
+
 test_forward_pass()
 test_backward_pass()
 test_memory_usage()
