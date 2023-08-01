@@ -232,7 +232,11 @@ class Attend(nn.Module):
             # return FlashAttention(q, k, v, mask=mask, attn_bias=attn_bias )
         
         if self.Flash2:
-            
+            #reshape q, k, v before passing into flash attention
+            batch_size, sequence_length, dim=q.shape
+            q = q.view(batch_size, self.heads, sequence_length, self.dim_head)
+            k = k.view(batch_size, self.heads, sequence_length, self.dim_head)
+            v = v.view(batch_size, self.heads, self.dim_head)
             return self.flash_attention(q, k, v)
 
         kv_einsum_eq = 'b j d' if k.ndim == 3 else 'b h j d'

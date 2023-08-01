@@ -235,8 +235,8 @@ class FlashAttention(nn.Module):
         h = self.heads
         context = default(context, x)
 
-        batch_size = x.shape[0]
-        x = x.view(batch_size, -1)
+        # batch_size = x.shape[0]
+        # x = x.view(batch_size, -1)
 
         q = self.to_q(x)
         k, v = self.to_kv(context).chunk(2, dim=-1)
