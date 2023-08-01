@@ -5,5 +5,6 @@ model = Attend(dim=512, dim_head=64, heads=64, q_bucket_size=128, k_bucket_size=
 q = torch.randn(1, 8, 512, 64)
 k = torch.randn(1, 8, 512, 64)
 v = torch.randn(1, 8, 512, 64)
-out, _ = model(q, k, v)
+
+out, _ = model(q, k, v, mask=0.1)
 assert out.shape == (1, 8, 512, 64)
