@@ -64,3 +64,10 @@ def test_error_rate():
     out, _ = model(q, k, v)
     assert (out != out).sum() == 0  # no NaN values
     logger.info("Error rate test passed.")
+
+test_forward_pass()
+test_backward_pass()
+test_memory_usage()
+
+test_execution_time()
+test_error_rate()
